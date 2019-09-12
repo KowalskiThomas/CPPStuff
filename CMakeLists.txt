@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 set (CMAKE_CXX_STANDARD 20)
-# set (CMAKE_CXX_FLAGS -O3)
+set (CMAKE_CXX_FLAGS -O0)
 
 project(Test)
 
@@ -15,3 +15,4 @@ add_executable(mkunique my_make_unique.cpp)
 add_executable(valueptr value_ptr.cpp)
 add_executable(funcptr funcptr.cpp)
 add_executable(crtp_poly crtp_poly.cpp)
+add_executable(cow cow.cpp)
