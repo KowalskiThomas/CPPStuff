@@ -35,10 +35,21 @@ public:
     ~klass() = default;
 };
 
+void f(std::unique_ptr<klass>&& p)
+{
+}
+
+void f(std::unique_ptr<klass>& p)
+{
+}
+
 void exec()
 {
     auto method1 = my::mku(new klass(1, false, 3.14));
     auto method2 = my::mku<klass>(1, false, 3.14);
-    auto fail = my::mku<klass>("incompatible", false);
+    // auto fail = my::mku<klass>("incompatible", false);
     assert(typeid(method1).hash_code() == typeid(method2).hash_code());
+
+    f(std::move(method1));
+    f(method1);
 }
