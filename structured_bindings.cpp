@@ -45,6 +45,6 @@ void exec() {
 
     my_array test;
     auto [integer_2, string, integer] = test;
-    std::cout << string << integer_2 << integer << std::end;
+    std::cout << string << integer_2 << integer << std::endl;
 }
 
