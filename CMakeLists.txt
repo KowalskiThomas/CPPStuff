@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_FLAGS -O0)
 
-project(Test)
+project(CppStuff)
 
 add_executable(threads threads.cpp)
 add_executable(coroutines coroutines.cpp)
@@ -20,3 +20,4 @@ add_executable(decorator decorator.cpp)
 add_executable(bindings structured_bindings.cpp)
 add_executable(thread_local thread_local.cpp)
 add_executable(variant variant.cpp)
+add_executable(lru lru.cpp)
