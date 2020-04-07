@@ -5,6 +5,9 @@
 #include <string>
 #include <deque>
 #include <map>
+#include <random>
+
+const constexpr bool debug = false;
 
 unsigned long get_timestamp()
 {
@@ -19,6 +22,11 @@ int factorial(int x)
         x--;
     }
     return total;
+}
+
+int complex_function(int x)
+{
+    return factorial(x) * factorial(x + 1) * factorial(x + 2) * factorial(x + 2) * factorial(x + 2) * factorial(x + 2)* factorial(x + 2)* factorial(x + 2);
 }
 
 class lru_cache
@@ -56,14 +64,15 @@ class lru_cache
 public:
     int get_value(int key)
     {
-        return factorial(key);
+        return complex_function(key);
     }
 
     int get(int key)
     {
         if (cached_data.find(key) != cached_data.end())
         {
-            std::cout << key << " found in cache" << std::endl;
+            if constexpr (debug)
+                std::cout << key << " found in cache" << std::endl;
             auto current_timestamp = get_timestamp();
             last_access[key] = current_timestamp;
             to_evict.emplace_back(key, current_timestamp);
@@ -71,12 +80,15 @@ public:
         }
         else
         {
-            std::cout << key << " not in cache.";
-            if (cached_data.size() >= 3) {
+            if constexpr (debug)
+                std::cout << key << " not in cache.";
+            if (cached_data.size() >= 128) {
                 auto evict_entry = evict_least_recently_used();
-                std::cout << " Evicting " << evict_entry.first;
+                if constexpr (debug)
+                    std::cout << " Evicting " << evict_entry.first;
             }
-            std::cout << " Inserting " << key << std::endl;
+            if constexpr (debug)
+                std::cout << " Inserting " << key << std::endl;
             insert(key, get_value(key));
             return cached_data[key];
         }
@@ -118,10 +130,32 @@ int main()
 void exec()
 {
     lru_cache cache;
-    std::cout << cache.get(0) << std::endl;
-    std::cout << cache.get(1) << std::endl;
-    std::cout << cache.get(3) << std::endl;
-    std::cout << cache.get(4) << std::endl;
-    std::cout << cache.get(1) << std::endl;
-    std::cout << cache.get(0) << std::endl;
+
+    auto rng = std::mt19937{};
+    auto distribution = std::uniform_int_distribution(128, 512);
+
+    size_t n = 1ull<<19ull;
+
+    auto tick = std::chrono::system_clock::now();
+    for(size_t i = 0; i < n; i++)
+    {
+        auto k = distribution(rng);
+        cache.get(k);
+    }
+    auto tock = std::chrono::system_clock::now();
+    auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick).count();
+    std::cout << diff << std::endl;
+
+    rng = std::mt19937{};
+    distribution = std::uniform_int_distribution(128, 512);
+
+    tick = std::chrono::system_clock::now();
+    for(size_t i = 0; i < n; i++)
+    {
+        auto k = distribution(rng);
+        complex_function(k);
+    }
+    tock = std::chrono::system_clock::now();
+    diff = std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick).count();
+    std::cout << diff << std::endl;
 }
